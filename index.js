@@ -4,7 +4,20 @@ const path = require('path');
 
 const app = express();
 
-let table = ["Mikes table"]
+const tables = [{
+    name: "bobby",
+    phone: 345-886-990,
+    email: "boby@gmail",
+    id: "1"
+    
+}]
+const waitlist = [{
+    name: "bobby",
+    phone: 345-886-990,
+    email: "boby@gmail",
+    id: "1"
+    
+}]
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -15,14 +28,31 @@ app.get("/",(req,res)=>{
     res.sendFile(path.join(__dirname, "index.html"))
 })
 
-app.get("/api/table",(req,res)=>{
-    res.json(table)
+app.get("/api/tables",(req,res)=>{
+    res.json(tables)
 })
 
-app.post("/api/table",(req,res)=>{
-    console.log(req.body.item);
-    table.push(req.body.item);
-    res.send(req.body.item)
+app.get("/api/waitlist",(req,res)=>{
+    res.json(waitlist)
+})
+
+app.get("/allTables", (req,res)=> res.sendFile(path.join(__dirname, "allTables.html")));
+
+app.get('/makeReservation', (req,res)=> res.sendFile(path.join(__dirname, "makeReservation.html")));
+
+app.post("/api/reserve",(req,res)=>{
+    let hasTable = false;
+    if(tables.length<5){
+        tables.push(req.body)
+        hasTable=true;
+    }else{
+        waitlist.push(req.body)
+    }
+    
+    res.json({
+        reservationData:req.body,
+        hasTable:hasTable
+    })
 })
 
 app.delete("/api/table",(req,res)=>{
